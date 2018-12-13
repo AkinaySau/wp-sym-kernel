@@ -30,23 +30,25 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract class Kernel
 {
     private $projectDir;
+    private $requestStackSize = 0;
+    private $resetServices    = false;
 
     protected $container;
     protected $environment;
     protected $debug;
+    protected $booted;
+    protected $startTime;
 
 
     public function __construct($environment, $debug)
     {
         $this->environment = $environment;
         $this->debug       = $debug;
-        $this->boot();
-
     }
 
     public function handler()
     {
-//        $this->boot();
+        $this->boot();
     }
 
     public function getProjectDir()
@@ -208,10 +210,10 @@ abstract class Kernel
             touch($oldContainerDir.'.legacy');
         }
 
-//        if ($this->container->has('cache_warmer')) {
-//            $this->container->get('cache_warmer')
-//                            ->warmUp($this->container->getParameter('kernel.cache_dir'));
-//        }
+        //        if ($this->container->has('cache_warmer')) {
+        //            $this->container->get('cache_warmer')
+        //                            ->warmUp($this->container->getParameter('kernel.cache_dir'));
+        //        }
     }
 
     /**
@@ -256,8 +258,35 @@ abstract class Kernel
         return ucfirst($this->environment).($this->debug ? 'Debug' : '').'ProjectContainer';
     }
 
-    private function boot()
+    /**
+     * @throws \ReflectionException
+     */
+    public function boot()
     {
+        if (true === $this->booted) {
+            return;
+        }
+        if ($this->debug) {
+            $this->startTime = microtime(true);
+        }
+        if ($this->debug && ! isset($_ENV[ 'SHELL_VERBOSITY' ]) && ! isset($_SERVER[ 'SHELL_VERBOSITY' ])) {
+            putenv('SHELL_VERBOSITY=3');
+            $_ENV[ 'SHELL_VERBOSITY' ]    = 3;
+            $_SERVER[ 'SHELL_VERBOSITY' ] = 3;
+        }
+
+        // init bundles
+//        $this->initializeBundles();
+
+        // init container
+        $this->initializeContainer();
+
+//        foreach ($this->getBundles() as $bundle) {
+//            $bundle->setContainer($this->container);
+//            $bundle->boot();
+//        }
+
+        $this->booted = true;
 
     }
 

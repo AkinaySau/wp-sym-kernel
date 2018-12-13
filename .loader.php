@@ -16,48 +16,55 @@ use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\Dotenv\Dotenv;
 
-require_once __DIR__.'/vendor/autoload.php';
-require_once __DIR__.'/.defines.php';
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/.defines.php';
 
 ###Create env###
-$path_to_env = ABSPATH.'.env';
-if ( ! file_exists($path_to_env)) {
-    $path_to_env = __DIR__.'/.env';
+$path_to_env = ABSPATH . '.env';
+if ( ! file_exists( $path_to_env ) ) {
+	$path_to_env = __DIR__ . '/.env';
 }
-if ( ! class_exists(Dotenv::class)) {
-    throw new \RuntimeException('APP_ENV environment variable is not defined. You need to define environment variables for configuration or add "symfony/dotenv" as a Composer dependency to load variables from a .env file.');
+if ( ! class_exists( Dotenv::class ) ) {
+	throw new \RuntimeException( 'APP_ENV environment variable is not defined. You need to define environment variables for configuration or add "symfony/dotenv" as a Composer dependency to load variables from a .env file.' );
 }
-if ( ! file_exists($path_to_env)) {
-    throw new \RuntimeException('Env file not found');
+if ( ! file_exists( $path_to_env ) ) {
+	throw new \RuntimeException( 'Env file not found' );
 }
-(new Dotenv())->load($path_to_env);
+( new Dotenv() )->load( $path_to_env );
 ###end load env###
 
 
 $env   = $_SERVER[ 'APP_ENV' ] ?? 'prod';
-$debug = (bool)($_SERVER[ 'APP_DEBUG' ] ?? ('prod' !== $env));
+$debug = (bool) ( $_SERVER[ 'APP_DEBUG' ] ?? ( 'prod' !== $env ) );
 
 
 ###load debug###
-if ($debug) {
-    umask(0000);
-    Debug::enable();
-    if (class_exists(ErrorHandler::class)) {
-        ErrorHandler::register();
-    }
-    if (class_exists(ExceptionHandler::class)) {
-        ExceptionHandler::register();
-    }
-    //    if (class_exists(ExceptionHandler::class)) {
-    //        DebugClassLoader::enable();
-    //    }
+if ( $debug ) {
+	umask( 0000 );
+	Debug::enable();
+	if ( class_exists( ErrorHandler::class ) ) {
+		ErrorHandler::register();
+	}
+	if ( class_exists( ExceptionHandler::class ) ) {
+		ExceptionHandler::register();
+	}
+	//    if (class_exists(ExceptionHandler::class)) {
+	//        DebugClassLoader::enable();
+	//    }
 }
 ###end debug###
 
 
-$kernel = new Kernel($env, $debug);
+$kernel = new Kernel( $env, $debug );
 
-//add_action('init', function () use ($kernel) {
-//
-//});
-dump($kernel->getProjectDir());
+//send kernel in init action
+add_action( 'init', function () use ( $kernel ) {
+
+	do_action( 'sym_kernel_boot_before',$kernel);
+	$kernel->boot();
+	do_action( 'sym_kernel_boot_after',$kernel);
+	//run handler(router )
+	if ( ! defined( 'WP_ADMIN' ) || WP_ADMIN === false ) {
+		$kernel->handler();
+	}
+} );
