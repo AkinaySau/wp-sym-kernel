@@ -1,0 +1,5 @@
+#Create AkinaySau(akinaysau@gmail.com)
+framework:
+    secret: '%env(APP_SECRET)%'
+    router:
+        strict_requirements: ~
