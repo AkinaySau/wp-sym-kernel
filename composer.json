@@ -1,0 +1,30 @@
+{
+	"name": "sau/sym-kernel",
+	"description": "WP plugin for use as dev-base(framework)",
+	"type": "project",
+	"license": "MIT",
+	"version": "0.0.1",
+	"authors": [
+		{
+			"name": "Akinay Sau",
+			"email": "akinay.sau@gmail.com",
+			"homepage": "http://a-sau.ru",
+			"role": "Developer"
+		}
+	],
+	"minimum-stability": "stable",
+	"autoload": {
+		"psr-4": {
+			"Sau\\WP\\Plugin\\SymKernel\\": "src/"
+		}
+	},
+	"require": {
+		"php": ">=7.2",
+		"symfony/dotenv": "4.2.*",
+		"symfony/filesystem": "4.2.*",
+		"symfony/debug": "4.2.*",
+		"symfony/var-dumper": "4.2.*",
+		"symfony/config": "4.2.*",
+		"symfony/dependency-injection": "4.2.*"
+	}
+}
