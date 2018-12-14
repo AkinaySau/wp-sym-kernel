@@ -27,6 +27,7 @@ class Kernel extends BaseKernel
      */
     protected $base_bundles = [
         \Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
+        \Symfony\Bundle\TwigBundle\TwigBundle::class           => ['all' => true],
     ];
     /**
      * @var Request

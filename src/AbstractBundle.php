@@ -37,7 +37,15 @@ abstract class AbstractBundle extends Bundle
     protected function loadConfigs()
     {
         $confDir = $this->getConfDirPath();
-        BundleFilter::addRoutes($confDir.'/{routing}'.Kernel::CONFIG_EXTS, $this->router_prefix);
-        BundleFilter::addService($confDir.'/{services}'.Kernel::CONFIG_EXTS);
+        BundleFilter::addRoutes($confDir.'{routing}'.Kernel::CONFIG_EXTS, $this->getRouterPrefix());
+        BundleFilter::addService($confDir.'{services}'.Kernel::CONFIG_EXTS);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRouterPrefix(): string
+    {
+        return $this->router_prefix;
     }
 }
