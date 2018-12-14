@@ -16,6 +16,8 @@ use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 require_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/.defines.php';
@@ -63,13 +65,18 @@ add_action('init', function () use ($kernel, $request) {
     $kernel->boot();
     //run handler(router )
     if ( ! defined('WP_ADMIN') || WP_ADMIN === false) {
-        $response = $kernel->handle($request);
-        if ($response->isOk()) {
-            $response->send();
-        }else{
-//            add_action()
+        try {
+            $response = $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
+
+            if ($response->isOk()) {
+                $response->send();
+                $kernel->terminate($request, $response);
+                //            } else {
+                //            add_action()
+            }
+        } catch (Exception $exception) {
+
         }
-//        dump(_wp_get_current_user());
-        $kernel->terminate($request, $response);
+
     }
 });

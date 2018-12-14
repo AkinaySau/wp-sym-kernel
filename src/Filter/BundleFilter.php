@@ -28,11 +28,12 @@ class BundleFilter extends AbstractFilter
      * Simple registration new routers
      *
      * @param string $path
+     * @param string $prefix
      */
-    public static function addRoutes(string $path)
+    public static function addRoutes(string $path, string $prefix = '/')
     {
-        static::filter('sym_kernel_add_routes', function ($files) use ($path) {
-            $files[] = $path;
+        static::filter('sym_kernel_add_routes', function ($files) use ($path, $prefix) {
+            $files[] = ['path' => $path, 'prefix' => $prefix];
 
             return $files;
         });

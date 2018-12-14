@@ -9,12 +9,12 @@
 namespace Sau\WP\Plugin\SymKernel;
 
 use Sau\WP\Plugin\SymKernel\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class Kernel extends BaseKernel
@@ -101,7 +101,7 @@ class Kernel extends BaseKernel
 
         $other = apply_filters('sym_kernel_add_routes', []);
         foreach ($other as $item) {
-            $routes->import($item, '/', 'glob');
+            $routes->import($item[ 'path' ], $item[ 'prefix' ], 'glob');
         }
     }
 
