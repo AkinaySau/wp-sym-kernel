@@ -1,1 +1,6 @@
 #Create AkinaySau(akinaysau@gmail.com)
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
