@@ -22,13 +22,12 @@ class Kernel extends BaseKernel
     use MicroKernelTrait;
 
     const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+
     /**
      * @var array base bundles
      */
-    protected $base_bundles = [
-        \Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-        \Symfony\Bundle\TwigBundle\TwigBundle::class           => ['all' => true],
-    ];
+    protected $base_bundles = [];
+
     /**
      * @var Request
      */
@@ -53,7 +52,7 @@ class Kernel extends BaseKernel
     public function registerBundles()
     {
         $bundles  = apply_filters('sym_kernel_add_bundles', []); #filter for add new bundle
-        $contents = array_merge($this->base_bundles, $bundles);
+        $contents = array_merge(require_once $this->getProjectDir().'/config/bundles.php',$this->base_bundles, $bundles);
         foreach ($contents as $class => $envs) {
             if (isset($envs[ 'all' ]) || isset($envs[ $this->environment ])) {
                 yield new $class();

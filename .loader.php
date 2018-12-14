@@ -63,19 +63,14 @@ $kernel  = new Kernel($env, $debug, $request);
 //send kernel in init action
 add_action('init', function () use ($kernel, $request) {
     $kernel->boot();
-    //run handler(router )
     if ( ! defined('WP_ADMIN') || WP_ADMIN === false) {
         try {
-            $response = $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
-
+            $response = $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, true);
             if ($response->isOk()) {
                 $response->send();
                 $kernel->terminate($request, $response);
-                //            } else {
-                //            add_action()
             }
-        } catch (Exception $exception) {
-
+        } catch (RouteNotFoundException $exception) {
         }
 
     }

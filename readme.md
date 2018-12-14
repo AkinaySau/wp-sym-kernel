@@ -12,4 +12,5 @@
         - twig
         - request
         - controllers(create custom controller)
- - 
+### Bugs
+ 1. If set *"strict_variables"* for *twig* as true not render debug, render 404. Why? And function if not exist.
